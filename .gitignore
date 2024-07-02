@@ -25,3 +25,6 @@ dist-ssr
 
 # .venv
 .venv/*
+
+# Other web project
+webBot/
