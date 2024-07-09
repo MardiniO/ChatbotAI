@@ -7,17 +7,17 @@ const Navbar = () => {
   return (
     <>
       <Nav>
+        <div className="titleContainer">
+          <img src={chatLogo} alt="Chatbot Logo" className="logo" />
+          <h1 className="title">
+            <b> ChatBot </b>
+          </h1>
+        </div>
+        <div className="logoSeparator" />
         <NavMenu>
-          <div className="titleContainer">
-            <img src={chatLogo} alt="Chatbot Logo" className="logo" />
-            <h1 className="title">
-              <b> ChatBot </b>
-            </h1>
-          </div>
-          <div className="logoSeparator" />
           <NavLink to="/"> Home </NavLink>
           <NavLink to="/about"> About </NavLink>
-          <NavLink to="/admin"> Admin </NavLink>
+          <NavLink to="/admin">Admin</NavLink>
         </NavMenu>
       </Nav>
     </>

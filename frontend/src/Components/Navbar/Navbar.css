@@ -26,3 +26,7 @@
   border-radius: 20px;
   opacity: 30%;
 }
+
+.adminButton {
+  justify-content: right !important;
+}
