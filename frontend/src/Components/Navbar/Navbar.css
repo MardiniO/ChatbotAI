@@ -3,22 +3,26 @@
   width: 50px;
 }
 
-.navContainer {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #fff;
-  padding: 5px;
-}
-
 .titleContainer {
   display: flex;
   margin-left: 3%;
+  padding: 1rem;
 }
 
 .title {
   margin-top: auto;
   margin-bottom: auto;
   margin-left: 5px;
+  cursor: default;
+}
+
+.logoSeparator {
+  height: 30px;
+  width: 1px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-left: 1px solid #000000;
+  box-shadow: 0px 0px 5px #444444;
+  border-radius: 20px;
+  opacity: 30%;
 }

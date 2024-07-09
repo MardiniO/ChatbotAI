@@ -7,9 +7,8 @@ const ChatbotUI = () => {
       <div
         style={{
           display: "flex",
-          justifyContent: "centre",
-          alignItems: "centre",
-          height: "100vh",
+          justifyContent: "center",
+          alignItems: "center",
         }}>
         <link
           rel="stylesheet"
