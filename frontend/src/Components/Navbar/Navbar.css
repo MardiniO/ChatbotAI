@@ -22,16 +22,3 @@
   margin-bottom: auto;
   margin-left: 5px;
 }
-
-ul {
-  flex: 1;
-  list-style: none;
-  text-align: center;
-}
-
-ul li {
-  display: inline-block;
-  margin: 10px 20px;
-  font-size: 18px;
-  cursor: pointer;
-}
