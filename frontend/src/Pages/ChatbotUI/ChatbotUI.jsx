@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./ChatbotUI.css";
 
+import chatbotLogo from "../../assets/chatbot.png";
+import userLogo from "../../assets/User-avatar.png";
+
 const ChatbotUI = () => {
   const [messages, setMessages] = useState([]); // State array for all messages
   const [inputData, setInputData] = useState("");
@@ -71,7 +74,21 @@ const ChatbotUI = () => {
           </div>
           <div className="cardBody" ref={cardBodyRef}>
             {messages.map((message, index) => (
-              <div className="textContainer" key={index}>
+              <div className="msgContainer" key={index}>
+                <div
+                  className={
+                    message.sender === "user"
+                      ? "sentImgContainer"
+                      : "receivedImgContainer"
+                  }>
+                  <img
+                    src={message.sender === "user" ? userLogo : chatbotLogo}
+                    className={
+                      message.sender === "user" ? "sentImg" : "receivedImg"
+                    }
+                    alt={`${message.sender} logo`}
+                  />
+                </div>
                 <div
                   className={
                     message.sender === "user"

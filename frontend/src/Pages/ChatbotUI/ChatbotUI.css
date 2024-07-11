@@ -1,3 +1,7 @@
+/*  */
+/* Card Container, Header, Body, and Footer CSS */
+/*  */
+
 .cardCont {
   height: 70vh;
   width: 70vw;
@@ -19,7 +23,7 @@
 }
 
 .cardHeader.scrolled {
-  box-shadow: 0 2px 4px -4px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 2px 4px -4px rgba(0, 0, 0, 0.5);
 }
 
 .cardBody {
@@ -36,6 +40,10 @@
   padding: 2%;
   padding-bottom: 0px;
 }
+
+/*  */
+/* Inside Card Footer, Input Area CSS */
+/*  */
 
 .messageArea {
   display: flex;
@@ -77,30 +85,86 @@
   font-size: 18px !important;
 }
 
+/*  */
+/* Sent and Received Messages Container CSS */
+/*  */
+
+/* Text DIV CSS, responsible for everything surrounding the text. */
+
 .sentMessage {
-  font-size: 12px;
+  font-size: 14px;
   background-color: #e7e7e7;
-  float: right;
-  width: fit-content;
+
   padding: 1rem;
-  border-radius: 50px;
-  margin-right: 36.5px;
+  margin-right: 5px;
   margin-bottom: 5px;
   margin-top: 5px;
+
+  float: right;
+  width: fit-content;
+  min-width: 6%;
+  max-width: 50%;
+
+  border-radius: 20px;
+
+  text-align: right;
 }
 
 .receivedMessage {
-  font-size: 12px;
+  font-size: 14px;
   background-color: #e7e7e7;
-  float: left;
-  width: fit-content;
+
   padding: 1rem;
-  margin-left: 36px;
-  border-radius: 50px;
+  margin-left: 5px;
   margin-bottom: 5px;
   margin-top: 5px;
+
+  float: left;
+  width: fit-content;
+  min-width: 6%;
+  max-width: 50%;
+
+  border-radius: 20px;
+
+  text-align: left;
 }
 
-.textContainer {
+.msgContainer {
   width: 100%;
+  align-items: center;
+  position: relative;
+}
+
+/* Image Container, responsible for centering and positioning of the images. */
+
+.sentImgContainer {
+  width: fit-content;
+  float: right;
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+  margin-right: 38px;
+}
+
+.receivedImgContainer {
+  width: fit-content;
+  float: left;
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+  margin-left: 34px;
+}
+
+/*  */
+/* Image CSS */
+/*  */
+
+.sentImg {
+  height: 22px;
+  width: 22px;
+}
+
+.receivedImg {
+  height: 24px;
+  width: 24px;
 }
