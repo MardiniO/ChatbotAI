@@ -106,8 +106,6 @@
   max-width: 50%;
 
   border-radius: 20px;
-
-  text-align: right;
 }
 
 .receivedMessage {
@@ -126,7 +124,12 @@
 
   border-radius: 20px;
 
-  text-align: left;
+  display: flex;
+  align-items: center;
+}
+
+[dir="rtl"] .receivedMessage {
+  text-align: right; /* Align right for right-to-left languages like Arabic */
 }
 
 .msgContainer {
@@ -167,4 +170,39 @@
 .receivedImg {
   height: 24px;
   width: 24px;
+}
+
+/*  */
+/* Modal Button Styling */
+/*  */
+
+.openModalButton {
+  width: fit-content;
+
+  padding: 4px;
+  margin-right: 10px;
+
+  background-color: #fff;
+
+  border: 1px;
+  border-radius: 10px;
+  border-style: solid;
+
+  transition-duration: 0.1s;
+}
+
+.openModalButton:hover {
+  width: fit-content;
+
+  padding: 4px;
+  margin-right: 10px;
+
+  background-color: #000000; /* Green */
+  color: white;
+
+  border: 1px;
+  border-color: black;
+  border-style: solid;
+
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.24), 0 2px 4px 0 rgba(0, 0, 0, 0.19);
 }
