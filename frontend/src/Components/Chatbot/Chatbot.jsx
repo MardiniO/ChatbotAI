@@ -9,9 +9,10 @@ import userLogo from "../../assets/User-avatar.png";
 const Chatbot = () => {
   const [messages, setMessages] = useState([]);
   const [inputData, setInputData] = useState("");
-  const [isScrolled, setIsScrolled] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
-  const [modalContent, setModalContent] = useState("");
+
+  const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef(null);
   const cardBodyRef = useRef(null);
 
@@ -43,7 +44,6 @@ const Chatbot = () => {
             },
           },
         ];
-        setModalContent("هل تبحث عن المواد؟");
       } else {
         receivedMessages = [receivedMessage];
       }
@@ -79,8 +79,7 @@ const Chatbot = () => {
     };
   }, []);
 
-  const openModal = (content) => {
-    setModalContent(content);
+  const openModal = () => {
     setShowModal(true);
   };
 
@@ -161,11 +160,7 @@ const Chatbot = () => {
           </div>
         </form>
       </div>
-      {showModal && (
-        <Modal isOpen={showModal} onClose={closeModal}>
-          {modalContent}
-        </Modal>
-      )}
+      {showModal && <Modal isOpen={showModal} onClose={closeModal}></Modal>}
     </>
   );
 };
