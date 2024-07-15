@@ -2,9 +2,12 @@ import React, { useState, useEffect } from "react";
 import "./Modal.css";
 import axios from "axios";
 import DataTable from "react-data-table-component";
+import { FilterComponent } from "../FilterComponent/FilterComponent";
 
 const Modal = ({ isOpen, onClose }) => {
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [filterText, setFilterText] = useState("");
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -19,6 +22,7 @@ const Modal = ({ isOpen, onClose }) => {
           const data = response.data.data;
           if (Array.isArray(data)) {
             setData(data);
+            setFilteredData(data);
           } else {
             throw new Error("Invalid data format received");
           }
@@ -34,34 +38,90 @@ const Modal = ({ isOpen, onClose }) => {
     fetchData();
   }, [isOpen]);
 
+  useEffect(() => {
+    const filteredItems = data.filter(
+      (item) =>
+        (item.question &&
+          item.question.toLowerCase().includes(filterText.toLowerCase())) ||
+        (item.answer &&
+          item.answer.toLowerCase().includes(filterText.toLowerCase()))
+    );
+
+    setFilteredData(filteredItems);
+  }, [filterText, data]);
+
   if (!isOpen) return null;
 
   const columns = [
-    { name: "Question", selector: (row) => row.question, sortable: true },
-    { name: "Answer", selector: (row) => row.answer, sortable: true },
+    {
+      name: "Question",
+      selector: (row) => row.question,
+      sortable: true,
+      wrap: true,
+      width: "50%",
+    },
+    {
+      name: "Answer",
+      selector: (row) => row.answer,
+      sortable: true,
+      wrap: true,
+      width: "50%",
+    },
   ];
 
   return (
     <div className={`modal ${isOpen ? "show" : ""}`}>
       <div className="modal-content">
-        <span className="close" onClick={onClose}>
-          &times;
-        </span>
-        {error ? (
-          <div className="error-message">{error}</div>
-        ) : (
+        <div className="modalHeader">
+          <span className="close" onClick={onClose}>
+            &times;
+          </span>
+          <FilterComponent
+            filterText={filterText}
+            onFilter={(e) => setFilterText(e.target.value)}
+            className="searchComponent"
+          />
+        </div>
+        <div className="modalBody">
           <DataTable
             columns={columns}
-            data={data}
+            data={filteredData}
             pagination
             highlightOnHover
             striped
             className="ModalDataTable"
+            dense
+            customStyles={customStyles}
           />
-        )}
+        </div>
       </div>
     </div>
   );
 };
 
 export default Modal;
+
+const customStyles = {
+  header: {
+    style: {
+      minHeight: "56px",
+    },
+  },
+  headRow: {
+    style: {
+      backgroundColor: "#f8f9fa",
+    },
+  },
+  headCells: {
+    style: {
+      paddingLeft: "8px", // override the cell padding for head cells
+      paddingRight: "8px",
+    },
+  },
+  cells: {
+    style: {
+      paddingLeft: "8px", // override the cell padding for data cells
+      paddingRight: "8px",
+    },
+  },
+};

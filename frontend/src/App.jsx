@@ -1,7 +1,8 @@
 import React from "react";
-import Navbar from "./Components/Navbar/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ChatbotUI from "./Pages/ChatbotUI/ChatbotUI";
+import Template from "./Pages/Template/Template";
+import Navbar from "./Components/Navbar/Navbar";
+import Chatbot from "./Components/Chatbot/Chatbot";
 import Admin from "./Pages/Admin/Admin";
 import About from "./Pages/About/About";
 
@@ -11,9 +12,9 @@ const App = () => {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<ChatbotUI />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/" element={<Template Component={Chatbot} />} />
+          <Route path="/about" element={<Template Component={About} />} />
+          <Route path="/admin" element={<Template Component={Admin} />} />
         </Routes>
       </Router>
     </div>

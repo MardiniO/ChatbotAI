@@ -31,3 +31,46 @@
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
+
+.modalHeader {
+  height: 10%;
+  position: relative;
+  align-items: center;
+}
+
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 98%;
+  transform: translateY(-80%);
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.filter-component {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-80%);
+}
+
+.filter-input {
+  padding: 10px;
+  width: 20vw;
+  border-radius: 10px;
+  border-style: solid;
+}
+
+.ModalDataTable {
+  overflow: auto !important;
+  height: 60vh;
+}
