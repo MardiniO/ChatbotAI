@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from "react";
 import "./Modal.css";
-import DataTable from "react-data-table-component";
 import axios from "axios";
+import DataTable from "react-data-table-component";
 
 const Modal = ({ isOpen, onClose }) => {
-  const [questions, setQuestions] = useState([]);
-  const [answers, setAnswers] = useState([]);
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!isOpen) return;
+
     const fetchData = async () => {
       try {
         const response = await axios.get(
           "http://127.0.0.1:5000/fetch-questions"
         );
         if (response.status === 200) {
-          const data = response.data.data; // Accessing the 'data' array from the response
+          const data = response.data.data;
           if (Array.isArray(data)) {
-            const fetchedQuestions = data.map((item) => item.question);
-            const fetchedAnswers = data.map((item) => item.answer);
-            setQuestions(fetchedQuestions);
-            setAnswers(fetchedAnswers);
+            setData(data);
           } else {
             throw new Error("Invalid data format received");
           }
@@ -28,23 +27,19 @@ const Modal = ({ isOpen, onClose }) => {
         }
       } catch (error) {
         console.error("Error fetching questions:", error);
+        setError("There was an error fetching the questions.");
       }
     };
 
     fetchData();
-  }, []); // Empty dependency array ensures this effect runs only once
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const columns = [
-    { name: "Question", selector: "question", sortable: true },
-    { name: "Answer", selector: "answer", sortable: true },
+    { name: "Question", selector: (row) => row.question, sortable: true },
+    { name: "Answer", selector: (row) => row.answer, sortable: true },
   ];
-
-  const data = questions.map((question, index) => ({
-    question,
-    answer: answers[index],
-  }));
 
   return (
     <div className={`modal ${isOpen ? "show" : ""}`}>
@@ -52,13 +47,18 @@ const Modal = ({ isOpen, onClose }) => {
         <span className="close" onClick={onClose}>
           &times;
         </span>
-        <DataTable
-          columns={columns}
-          data={data}
-          pagination
-          highlightOnHover
-          striped
-        />
+        {error ? (
+          <div className="error-message">{error}</div>
+        ) : (
+          <DataTable
+            columns={columns}
+            data={data}
+            pagination
+            highlightOnHover
+            striped
+            className="ModalDataTable"
+          />
+        )}
       </div>
     </div>
   );
