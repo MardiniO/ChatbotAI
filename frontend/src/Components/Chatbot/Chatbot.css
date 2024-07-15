@@ -1,17 +1,6 @@
 /*  */
-/* Card Container, Header, Body, and Footer CSS */
+/* Card Header, Body, and Footer CSS */
 /*  */
-
-.cardCont {
-  height: 70vh;
-  width: 70vw;
-  margin: auto;
-  background: #fff;
-  border-radius: 50px;
-  margin-top: 50px;
-  padding: 2%;
-  box-shadow: 0px 5px 20px grey;
-}
 
 .cardHeader {
   height: 15%;
@@ -31,7 +20,6 @@
   display: flex;
   flex-direction: column;
   overflow: auto;
-  max-height: 100%;
 }
 
 .cardFooter {
@@ -106,8 +94,6 @@
   max-width: 50%;
 
   border-radius: 20px;
-
-  text-align: right;
 }
 
 .receivedMessage {
@@ -126,7 +112,12 @@
 
   border-radius: 20px;
 
-  text-align: left;
+  display: flex;
+  align-items: center;
+}
+
+[dir="rtl"] .receivedMessage {
+  text-align: right; /* Align right for right-to-left languages like Arabic */
 }
 
 .msgContainer {
@@ -167,4 +158,39 @@
 .receivedImg {
   height: 24px;
   width: 24px;
+}
+
+/*  */
+/* Modal Button Styling */
+/*  */
+
+.openModalButton {
+  width: fit-content;
+
+  padding: 4px;
+  margin-right: 10px;
+
+  background-color: #fff;
+
+  border: 1px;
+  border-radius: 10px;
+  border-style: solid;
+
+  transition-duration: 0.1s;
+}
+
+.openModalButton:hover {
+  width: fit-content;
+
+  padding: 4px;
+  margin-right: 10px;
+
+  background-color: #000000;
+  color: white;
+
+  border: 1px;
+  border-color: black;
+  border-style: solid;
+
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.24), 0 2px 4px 0 rgba(0, 0, 0, 0.19);
 }
