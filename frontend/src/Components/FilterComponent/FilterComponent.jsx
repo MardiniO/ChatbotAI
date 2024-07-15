@@ -1,6 +1,7 @@
 import React from "react";
+import "./FilterComponent.css";
 
-export const FilterComponent = ({ filterText, onFilter }) => (
+const FilterComponent = ({ filterText, onFilter }) => (
   <div className="filter-component">
     <input
       type="text"
@@ -11,3 +12,5 @@ export const FilterComponent = ({ filterText, onFilter }) => (
     />
   </div>
 );
+
+export default FilterComponent;

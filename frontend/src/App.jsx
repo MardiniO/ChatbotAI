@@ -1,9 +1,14 @@
 import React from "react";
+
+// Responsible for the navigation to different pages in Navbar
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Template from "./Pages/Template/Template";
+
+// Importing Navbar component
+// Other imported components are fed into the template
 import Navbar from "./Components/Navbar/Navbar";
+import Template from "./Pages/Template/Template";
 import Chatbot from "./Components/Chatbot/Chatbot";
-import Admin from "./Pages/Admin/Admin";
+import SignIn from "./Pages/SignIn/SignIn";
 import About from "./Pages/About/About";
 
 const App = () => {
@@ -14,7 +19,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Template Component={Chatbot} />} />
           <Route path="/about" element={<Template Component={About} />} />
-          <Route path="/admin" element={<Template Component={Admin} />} />
+          <Route path="/signin" element={<Template Component={SignIn} />} />
         </Routes>
       </Router>
     </div>

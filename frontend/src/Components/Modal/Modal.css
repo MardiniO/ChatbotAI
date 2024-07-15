@@ -63,13 +63,6 @@
   transform: translateY(-80%);
 }
 
-.filter-input {
-  padding: 10px;
-  width: 20vw;
-  border-radius: 10px;
-  border-style: solid;
-}
-
 .ModalDataTable {
   overflow: auto !important;
   height: 60vh;
