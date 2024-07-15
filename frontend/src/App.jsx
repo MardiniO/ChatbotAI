@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // Other imported components are fed into the template
 import Navbar from "./Components/Navbar/Navbar";
 import Template from "./Pages/Template/Template";
-import Chatbot from "./Components/Chatbot/Chatbot";
+import Chatbot from "./Pages/Chatbot/Chatbot";
 import SignIn from "./Pages/SignIn/SignIn";
 import About from "./Pages/About/About";
 
