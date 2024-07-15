@@ -1,7 +1,13 @@
 import React from "react";
 
-const Admin = () => {
-  return <div>Admin</div>;
+const SignIn = () => {
+  return (
+    <>
+      <div className="cardHeader">
+        <h2> Sign In </h2>
+      </div>
+    </>
+  );
 };
 
-export default Admin;
+export default SignIn;
