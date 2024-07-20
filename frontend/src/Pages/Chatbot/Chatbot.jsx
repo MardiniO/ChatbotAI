@@ -161,6 +161,7 @@ const Chatbot = () => {
                 message.sender === "user" ? "sentMessage" : "receivedMessage"
               }
               dir={getDirection(message.text)}>
+              {/* {message.text === ""} */}
               <p>{message.text}</p>
               {message.options && message.options.modalButton && (
                 <button className="openModalButton" onClick={() => openModal()}>

@@ -10,6 +10,7 @@ import Template from "./Pages/Template/Template";
 import Chatbot from "./Pages/Chatbot/Chatbot";
 import SignIn from "./Pages/SignIn/SignIn";
 import About from "./Pages/About/About";
+import Admin from "./Pages/Admin/Admin";
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
           <Route path="/" element={<Template Component={Chatbot} />} />
           <Route path="/about" element={<Template Component={About} />} />
           <Route path="/signin" element={<Template Component={SignIn} />} />
+          <Route path="/admin" element={<Template Component={Admin} />} />
         </Routes>
       </Router>
     </div>
