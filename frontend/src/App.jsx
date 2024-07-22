@@ -21,7 +21,7 @@ const App = () => {
           <Route path="/" element={<Template Component={Chatbot} />} />
           <Route path="/about" element={<Template Component={About} />} />
           <Route path="/signin" element={<Template Component={SignIn} />} />
-          <Route path="/admin" element={<Template Component={Admin} />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </Router>
     </div>

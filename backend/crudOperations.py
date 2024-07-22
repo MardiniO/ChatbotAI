@@ -4,10 +4,7 @@ import mysql.connector
 # Function that connects to the database and returns the connection
 def connectToDatabase():
     conn = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="",
-        database="scs"
+        host="127.0.0.1", user="root", password="", database="scs"
     )
     return conn
 
