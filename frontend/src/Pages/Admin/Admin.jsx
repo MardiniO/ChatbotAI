@@ -96,23 +96,33 @@ const Admin = () => {
 
   const handleSave = async (updatedData) => {
     try {
-      const endpoint = mode === "questions" ? "update-question" : `update-user`;
-      const url =
-        mode === "questions"
-          ? `http://127.0.0.1:5000/${endpoint}/${updatedData.id}`
-          : `http://127.0.0.1:5000/${endpoint}/${currentData.input1}`;
+      if (updatedData.id) {
+        const endpoint =
+          mode === "questions" ? "update-question" : "update-user";
+        const url = `http://127.0.0.1:5000/${endpoint}/${updatedData.id}`;
 
-      await axios.put(url, {
-        question: mode === "questions" ? updatedData.input1 : undefined,
-        answer: mode === "questions" ? updatedData.input2 : undefined,
-        username: mode === "users" ? updatedData.input1 : undefined,
-        password: mode === "users" ? updatedData.input2 : undefined,
-      });
+        await axios.put(url, {
+          question: mode === "questions" ? updatedData.input1 : undefined,
+          answer: mode === "questions" ? updatedData.input2 : undefined,
+          username: mode === "users" ? updatedData.input1 : undefined,
+          password: mode === "users" ? updatedData.input2 : undefined,
+        });
+      } else {
+        const endpoint = "add";
+        const url = `http://127.0.0.1:5000/${endpoint}`;
+
+        await axios.post(url, {
+          question: mode === "questions" ? updatedData.input1 : undefined,
+          answer: mode === "questions" ? updatedData.input2 : undefined,
+          username: mode === "users" ? updatedData.input1 : undefined,
+          password: mode === "users" ? updatedData.input2 : undefined,
+        });
+      }
 
       setShowModal(false);
-      fetchData(); // Refresh data after update
+      fetchData(); // Refresh data after save
     } catch (error) {
-      console.error(`Error updating ${mode}:`, error);
+      console.error(`Error saving ${mode}:`, error);
     }
   };
 
