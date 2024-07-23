@@ -168,23 +168,31 @@ const Admin = () => {
   ];
 
   return (
-    <div>
-      <div className="adminHeader">
-        <FilterComponent
-          filterText={filterText}
-          onFilter={(e) => setFilterText(e.target.value)}
-        />
+    <>
+      <div className="adminCont">
+        <div className="adminHeader">
+          <FilterComponent
+            filterText={filterText}
+            onFilter={(e) => setFilterText(e.target.value)}
+          />
+          <div className="adminControls">
+            <button onClick={handleAdd}>Add</button>
+            <button onClick={handleSwitchDatabase}>Switch Database</button>
+          </div>
+        </div>
+        <div className="headerShadow" />
+        <div className="adminBody">
+          <DataTable
+            columns={columns}
+            data={filteredData}
+            pagination
+            highlightOnHover
+            striped
+            dense
+            className="ModalDataTable"
+          />
+        </div>
       </div>
-      <button onClick={handleAdd}>Add</button>
-      <button onClick={handleSwitchDatabase}>Switch Database</button>
-      <DataTable
-        columns={columns}
-        data={filteredData}
-        pagination
-        highlightOnHover
-        striped
-        dense
-      />
       <Modal
         show={showModal}
         onClose={() => setShowModal(false)}
@@ -192,7 +200,7 @@ const Admin = () => {
         data={currentData}
         mode={mode}
       />
-    </div>
+    </>
   );
 };
 

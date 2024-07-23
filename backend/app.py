@@ -60,7 +60,7 @@ def update_question(id):
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/delete-question/<int:id>", methods=["DELETE"])
+@app.route("/delete-questions/<int:id>", methods=["DELETE"])
 def delete_question(id):
     try:
         deleteData(id)
@@ -103,7 +103,7 @@ def update_user(username):
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/delete-user/<string:username>", methods=["DELETE"])
+@app.route("/delete-users/<string:username>", methods=["DELETE"])
 def delete_user(username):
     try:
         if username in users_db:
