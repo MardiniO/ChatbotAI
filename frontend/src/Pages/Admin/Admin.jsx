@@ -27,28 +27,37 @@ const Modal = ({ show, onClose, onSave, data, mode }) => {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h2>{mode === "questions" ? "Update Question" : "Update User"}</h2>
-        <form onSubmit={handleSubmit}>
+        <div className="modalHeader">
+          <h2>{mode === "questions" ? "Update Question" : "Update User"}</h2>
+          <span className="close" onClick={onClose}>
+            &times;
+          </span>
+        </div>
+        <form onSubmit={handleSubmit} className="formContent">
           <div className="form-group">
-            <label>{mode === "questions" ? "Question" : "Username"}</label>
+            <label> {mode === "questions" ? "Question" : "User"} </label>
             <input
               type="text"
               value={input1}
+              placeholder={mode === "questions" ? "Question" : "User"}
               onChange={(e) => setInput1(e.target.value)}
             />
           </div>
           <div className="form-group">
-            <label>{mode === "questions" ? "Answer" : "Password"}</label>
+            <label> {mode === "questions" ? "Answer" : "Password"} </label>
             <input
               type="text"
               value={input2}
+              placeholder={mode === "questions" ? "Answer" : "Password"}
               onChange={(e) => setInput2(e.target.value)}
             />
           </div>
-          <button type="submit">Submit</button>
-          <button type="button" onClick={onClose}>
-            Close
-          </button>
+          {/* Center the submit button */}
+          <div className="buttonContainer">
+            <button type="submit" className="adminSubmit">
+              Submit
+            </button>
+          </div>
         </form>
       </div>
     </div>
@@ -156,8 +165,10 @@ const Admin = () => {
       name: "Actions",
       cell: (row) => (
         <>
-          <button onClick={() => handleUpdate(row)}>Update</button>
-          <button onClick={() => handleDelete(row)}>Delete</button>
+          <div className="actionButtonCont">
+            <button onClick={() => handleUpdate(row)}>Update</button>
+            <button onClick={() => handleDelete(row)}>Delete</button>
+          </div>
         </>
       ),
       ignoreRowClick: true,
@@ -188,7 +199,6 @@ const Admin = () => {
             pagination
             highlightOnHover
             striped
-            dense
             className="ModalDataTable"
           />
         </div>
@@ -205,5 +215,3 @@ const Admin = () => {
 };
 
 export default Admin;
-
-// Comments for commit

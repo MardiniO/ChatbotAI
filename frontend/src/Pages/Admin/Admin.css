@@ -1,25 +1,23 @@
+/* FilterComponent styles */
 .filter-component {
   all: revert;
 }
 
+/* Container styles for the Admin component */
 .adminCont {
   height: 80%;
   width: 80%;
-
   border-radius: 20px;
-  overflow: hidden;
-
   background-color: white;
   box-shadow: 0px 5px 20px grey;
-
   margin-left: auto;
   margin-right: auto;
   margin-top: 25px;
-
   padding: 2%;
   padding-top: 0;
 }
 
+/* Admin header styling */
 .adminHeader {
   display: flex;
   justify-content: space-between;
@@ -28,31 +26,46 @@
   border: 1px;
 }
 
+/* Admin control buttons styling */
 .adminControls button {
   width: 10rem;
   height: 38px;
   margin-left: 10px;
+  border-radius: 10px;
+  border: 1px;
+  border-style: solid;
 }
 
+/* Admin body styling */
 .adminBody {
   border: 2px;
   border-style: solid;
-  border-radius: 2px;
+  border-radius: 10px;
   border-color: #e3e3e3;
+  overflow: hidden;
 }
 
-/* .headerShadow {
-  height: 2px;
-  width: 100%;
-  background-color: #888;
-  margin-bottom: 10px;
-} */
-
+/* Modal data table styling */
 .ModalDataTable {
   overflow: auto !important;
   height: 60vh;
 }
 
+/* Action button container styling */
+.actionButtonCont {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Action button styling */
+.actionButtonCont button {
+  all: revert;
+  margin: 5px;
+  padding: 2%;
+  width: 75px;
+}
+
+/* Modal overlay styling */
 .modal {
   display: flex;
   justify-content: center;
@@ -67,15 +80,55 @@
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+/* Modal content styling */
 .modal-content {
   background-color: white;
-  padding: 20px;
+  padding: 2%;
   border: 1px solid #888;
   width: 80%;
   max-width: 600px;
   border-radius: 8px;
+  height: fit-content;
 }
 
+/* Form group styling */
 .form-group {
-  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0 10px 0;
+}
+
+/* Input field styling */
+.form-group input {
+  width: 100%;
+  padding: 2%;
+  border-radius: 10px;
+  border: 1px;
+  border-style: solid;
+  margin: 10px auto 0 auto; /* Center input fields */
+}
+
+/* Button container for centering submit button */
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+}
+
+/* Submit button styling */
+.adminSubmit {
+  padding: 2%;
+  border: 1px solid #888;
+  border-radius: 10px;
+  background-color: default;
+  color: black;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 150px; /* Set a fixed width */
+  text-align: center;
+  margin: 10px auto 0; /* Center the submit button */
+}
+
+/* Hover effect for submit button */
+.adminSubmit:hover {
+  background-color: #888;
 }
