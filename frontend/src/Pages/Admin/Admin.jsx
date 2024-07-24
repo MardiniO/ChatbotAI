@@ -21,7 +21,7 @@ const Modal = ({ show, onClose, onSave, data, mode }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({ id: data.id, input1, input2 });
+    onSave({ id: data.id, input1, input2 }); // Make sure to pass the id
   };
 
   return (
@@ -52,7 +52,6 @@ const Modal = ({ show, onClose, onSave, data, mode }) => {
               onChange={(e) => setInput2(e.target.value)}
             />
           </div>
-          {/* Center the submit button */}
           <div className="buttonContainer">
             <button type="submit" className="adminSubmit">
               Submit
@@ -105,6 +104,7 @@ const Admin = () => {
 
   const handleSave = async (updatedData) => {
     try {
+      // Check if ID is present for update, otherwise, add new entry
       if (updatedData.id) {
         const endpoint =
           mode === "questions" ? "update-question" : "update-user";
@@ -117,7 +117,7 @@ const Admin = () => {
           password: mode === "users" ? updatedData.input2 : undefined,
         });
       } else {
-        const endpoint = "add";
+        const endpoint = mode === "questions" ? "add-question" : "add-user";
         const url = `http://127.0.0.1:5000/${endpoint}`;
 
         await axios.post(url, {
