@@ -4,6 +4,7 @@ import DataTable from "react-data-table-component";
 import FilterComponent, {
   useFilter,
 } from "../../Components/FilterComponent/FilterComponent";
+import FlashMessage from "../../Components/FlashMessage/FlashMessage"; // Import FlashMessage
 import "./Admin.css";
 
 const Modal = ({ show, onClose, onSave, data, mode }) => {
@@ -35,7 +36,7 @@ const Modal = ({ show, onClose, onSave, data, mode }) => {
         </div>
         <form onSubmit={handleSubmit} className="formContent">
           <div className="form-group">
-            <label> {mode === "questions" ? "Question" : "User"} </label>
+            <label>{mode === "questions" ? "Question" : "User"}</label>
             <input
               type="text"
               value={input1}
@@ -44,7 +45,7 @@ const Modal = ({ show, onClose, onSave, data, mode }) => {
             />
           </div>
           <div className="form-group">
-            <label> {mode === "questions" ? "Answer" : "Password"} </label>
+            <label>{mode === "questions" ? "Answer" : "Password"}</label>
             <input
               type="text"
               value={input2}
@@ -69,6 +70,8 @@ const Admin = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentData, setCurrentData] = useState({});
   const [mode, setMode] = useState("questions");
+  const [flashMessage, setFlashMessage] = useState(""); // Flash message state
+  const [flashType, setFlashType] = useState("success"); // Flash message type
 
   useEffect(() => {
     fetchData();
@@ -96,8 +99,12 @@ const Admin = () => {
   const handleDelete = async (row) => {
     try {
       await axios.delete(`http://127.0.0.1:5000/delete-${mode}/${row.id}`);
+      setFlashMessage("Data deleted successfully."); // Set flash message
+      setFlashType("success");
       fetchData(); // Refresh data after deletion
     } catch (error) {
+      setFlashMessage("Error deleting data."); // Set flash message
+      setFlashType("error");
       console.error(`Error deleting ${mode}:`, error);
     }
   };
@@ -116,6 +123,9 @@ const Admin = () => {
           username: mode === "users" ? updatedData.input1 : undefined,
           password: mode === "users" ? updatedData.input2 : undefined,
         });
+
+        setFlashMessage("Data updated successfully."); // Set flash message
+        setFlashType("success");
       } else {
         const endpoint = mode === "questions" ? "add-question" : "add-user";
         const url = `http://127.0.0.1:5000/${endpoint}`;
@@ -126,11 +136,16 @@ const Admin = () => {
           username: mode === "users" ? updatedData.input1 : undefined,
           password: mode === "users" ? updatedData.input2 : undefined,
         });
+
+        setFlashMessage("Data added successfully."); // Set flash message
+        setFlashType("success");
       }
 
       setShowModal(false);
       fetchData(); // Refresh data after save
     } catch (error) {
+      setFlashMessage("Error saving data."); // Set flash message
+      setFlashType("error");
       console.error(`Error saving ${mode}:`, error);
     }
   };
@@ -142,6 +157,10 @@ const Admin = () => {
 
   const handleSwitchDatabase = () => {
     setMode((prevMode) => (prevMode === "questions" ? "users" : "questions"));
+  };
+
+  const handleCloseFlashMessage = () => {
+    setFlashMessage("");
   };
 
   const filteredData = useFilter(data, filterText);
@@ -209,6 +228,11 @@ const Admin = () => {
         onSave={handleSave}
         data={currentData}
         mode={mode}
+      />
+      <FlashMessage
+        message={flashMessage}
+        type={flashType}
+        onClose={handleCloseFlashMessage}
       />
     </>
   );

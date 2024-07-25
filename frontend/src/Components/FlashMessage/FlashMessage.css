@@ -1,7 +1,7 @@
 /* FlashMessage.css */
 .flashMessage {
   position: fixed;
-  top: 0;
+  top: 55px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #4caf50; /* Default color for success */

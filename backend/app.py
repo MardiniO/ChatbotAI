@@ -117,9 +117,11 @@ def update_user(user_id):
 
         ids, _, _ = readUserData()
 
+        hashedPassword = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+
         # Logic to update the user in your database
         if user_id in ids:
-            updateUserData(user_id, username, password)
+            updateUserData(user_id, username, hashedPassword)
             return jsonify({"message": "User updated successfully"}), 200
         else:
             return jsonify({"error": "User not found"}), 404
