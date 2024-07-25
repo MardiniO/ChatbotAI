@@ -1,0 +1,29 @@
+/* FlashMessage.css */
+.flashMessage {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4caf50; /* Default color for success */
+  color: white;
+  padding: 15px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.flashMessage.error {
+  background-color: #f44336; /* Color for error messages */
+}
+
+.flashMessage button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
