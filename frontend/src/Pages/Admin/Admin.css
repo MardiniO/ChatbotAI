@@ -3,9 +3,68 @@
   all: revert;
 }
 
+.adminPageCont {
+  display: flex;
+  flex-direction: row;
+}
+
+.adminPanel {
+  height: 556px;
+  width: 15%;
+  border-radius: 20px;
+  background-color: white;
+  box-shadow: 0px 5px 20px grey;
+  display: block;
+
+  margin-top: 25px;
+  padding: 1%;
+
+  display: flex;
+  flex-direction: column;
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.switchButton {
+  width: 10rem;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px;
+  border-style: solid;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.buttonSeparator {
+  width: 90%;
+  height: 3px;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  background-color: #e3e3e3;
+
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  border-radius: 1rem;
+}
+
+.databaseControl button {
+  width: 10rem;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px;
+  border-style: solid;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 12px;
+}
+
 /* Container styles for the Admin component */
-.adminCont {
-  height: 80%;
+.adminBody {
+  height: 100%;
   width: 80%;
   border-radius: 20px;
   background-color: white;
@@ -26,18 +85,8 @@
   border: 1px;
 }
 
-/* Admin control buttons styling */
-.adminControls button {
-  width: 10rem;
-  height: 38px;
-  margin-left: 10px;
-  border-radius: 10px;
-  border: 1px;
-  border-style: solid;
-}
-
 /* Admin body styling */
-.adminBody {
+.adminTable {
   border: 2px;
   border-style: solid;
   border-radius: 10px;

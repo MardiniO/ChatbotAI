@@ -72,9 +72,13 @@ const Admin = () => {
   const [mode, setMode] = useState("questions");
   const [flashMessage, setFlashMessage] = useState(""); // Flash message state
   const [flashType, setFlashType] = useState("success"); // Flash message type
+  const [firstUser, setFirstUser] = useState(null); // State to store the first user
 
   useEffect(() => {
     fetchData();
+    if (mode === "users") {
+      fetchFirstUser();
+    }
   }, [mode]);
 
   const fetchData = async () => {
@@ -84,6 +88,17 @@ const Admin = () => {
       setData(data);
     } catch (error) {
       console.error(`Error fetching ${mode}:`, error);
+    }
+  };
+
+  const fetchFirstUser = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:5000/fetch-users");
+      if (response.data.data.length > 0) {
+        setFirstUser(response.data.data[0]);
+      }
+    } catch (error) {
+      console.error("Error fetching the first user:", error);
     }
   };
 
@@ -97,13 +112,18 @@ const Admin = () => {
   };
 
   const handleDelete = async (row) => {
+    if (mode === "users" && firstUser && row.id === firstUser.id) {
+      setFlashMessage("Default user cannot be deleted.");
+      setFlashType("error");
+      return;
+    }
     try {
       await axios.delete(`http://127.0.0.1:5000/delete-${mode}/${row.id}`);
-      setFlashMessage("Data deleted successfully."); // Set flash message
+      setFlashMessage("Data deleted successfully.");
       setFlashType("success");
-      fetchData(); // Refresh data after deletion
+      fetchData();
     } catch (error) {
-      setFlashMessage("Error deleting data."); // Set flash message
+      setFlashMessage("Error deleting data.");
       setFlashType("error");
       console.error(`Error deleting ${mode}:`, error);
     }
@@ -199,27 +219,35 @@ const Admin = () => {
 
   return (
     <>
-      <div className="adminCont">
-        <div className="adminHeader">
-          <FilterComponent
-            filterText={filterText}
-            onFilter={(e) => setFilterText(e.target.value)}
-          />
-          <div className="adminControls">
+      <div className="adminPageCont">
+        <div className="adminPanel">
+          <button onClick={handleSwitchDatabase} className="switchButton">
+            Switch Database
+          </button>
+          <div className="buttonSeparator" />
+          <div className="databaseControl">
             <button onClick={handleAdd}>Add</button>
-            <button onClick={handleSwitchDatabase}>Switch Database</button>
+            <button> Import data </button>
+            <button> Export data </button>
           </div>
         </div>
-        <div className="headerShadow" />
         <div className="adminBody">
-          <DataTable
-            columns={columns}
-            data={filteredData}
-            pagination
-            highlightOnHover
-            striped
-            className="ModalDataTable"
-          />
+          <div className="adminHeader">
+            <FilterComponent
+              filterText={filterText}
+              onFilter={(e) => setFilterText(e.target.value)}
+            />
+          </div>
+          <div className="adminTable">
+            <DataTable
+              columns={columns}
+              data={filteredData}
+              pagination
+              highlightOnHover
+              striped
+              className="ModalDataTable"
+            />
+          </div>
         </div>
       </div>
       <Modal
