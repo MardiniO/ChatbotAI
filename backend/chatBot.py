@@ -1,5 +1,9 @@
 from difflib import get_close_matches
-from crudOperations import *
+from crudOperations import (
+    connectToDatabase,
+    readQuesData,
+    addQuesToDatabase,
+)
 
 
 # Function that returns the closest result to the question from a list of questions
@@ -27,7 +31,7 @@ def chatBot(text):
     # Connecting to database and storing existing IDs, questions, and answers
     conn = connectToDatabase()
     cursor = conn.cursor()
-    [_, DatabaseQues, DatabaseAns] = readVariablesFromTable()
+    [_, DatabaseQues, DatabaseAns] = readQuesData()
     cursor.close()
     conn.close()
 
@@ -55,7 +59,7 @@ def chatBot(text):
         print(text[0])
         if text[0] == "@" and text[(len(text)) - 1] == "@":
             text = text[1 : len(text) - 1]
-            addToDatabase(question, text)
+            addQuesToDatabase(question, text)
             if text.isascii():
                 return "Thank you!"
             else:

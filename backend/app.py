@@ -11,6 +11,7 @@ from crudOperations import (
     deleteUserData,
     updateUserData,
 )
+from flask_bcrypt import bcrypt
 
 app = Flask(__name__)
 CORS(app)
@@ -37,10 +38,16 @@ def sign_in():
         data = request.json
         username = data.get("username")
         password = data.get("password")
+
         if not username or not password:
             return jsonify({"error": "Missing username or password"}), 400
         ids, users, passwords = readUserData()
-        if username in users and passwords[users.index(username)] == password:
+
+        print(passwords[users.index(username)])
+
+        if username in users and bcrypt.checkpw(
+            password.encode("utf-8"), passwords[users.index(username)].encode("utf-8")
+        ):
             return jsonify({"message": "Sign-in successful"})
         else:
             return jsonify({"error": "Invalid username or password"}), 401
@@ -171,10 +178,12 @@ def add_user():
         if not username or not password:
             return jsonify({"error": "Missing username or password"}), 400
 
-        ids, usernames, passwords = readUserData()
+        _, usernames, _ = readUserData()
+
+        hashedPassword = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
         if username not in usernames:
-            addUserToDatabase(username, password)
+            addUserToDatabase(username, hashedPassword)
             return jsonify({"message": "User added successfully"})
         else:
             return jsonify({"error": "User already exists"}), 400
