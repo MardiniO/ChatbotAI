@@ -13,14 +13,10 @@ from datetime import timedelta
 
 from chatBot import chatBot
 from crudOperations import (
-    readQuesData,
-    updateQuesData,
-    deleteQuesData,
-    addQuesToDatabase,
-    readUserData,
-    addUserToDatabase,
-    deleteUserData,
-    updateUserData,
+    addData,
+    readData,
+    updateData,
+    deleteData,
 )
 
 # Password encryption
@@ -60,7 +56,7 @@ def sign_in():
         if not username or not password:
             return jsonify({"error": "Missing username or password"}), 400
 
-        _, users, passwords = readUserData()
+        _, users, passwords = readData(1)
 
         if username in users and bcrypt.checkpw(
             password.encode("utf-8"), passwords[users.index(username)].encode("utf-8")
@@ -78,7 +74,7 @@ def sign_in():
 @jwt_required()
 def fetch_questions():
     try:
-        ids, questions, answers = readQuesData()
+        ids, questions, answers = readData(0)
         if not questions or not answers:
             return jsonify(error="No questions or answers found"), 404
         data = [
@@ -95,7 +91,7 @@ def fetch_questions():
 @jwt_required()
 def fetch_users():
     try:
-        ids, users, passwords = readUserData()
+        ids, users, passwords = readData(1)
         if not users or not passwords:
             return jsonify(error="No users or passwords found"), 404
         data = [
@@ -118,7 +114,7 @@ def update_question(id):
         if not question or not answer:
             return jsonify({"error": "Missing question or answer"}), 400
 
-        updateQuesData(id, question, answer)
+        updateData(0, id, question, answer)
         return jsonify({"message": "Question updated successfully"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -135,13 +131,13 @@ def update_user(user_id):
         if not username or not password:
             return jsonify({"error": "Missing username or password"}), 400
 
-        ids, _, _ = readUserData()
+        ids, _, _ = readData(1)
 
         hashedPassword = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
         # Logic to update the user in your database
         if user_id in ids:
-            updateUserData(user_id, username, hashedPassword)
+            updateData(1, user_id, username, hashedPassword)
             return jsonify({"message": "User updated successfully"}), 200
         else:
             return jsonify({"error": "User not found"}), 404
@@ -154,9 +150,9 @@ def update_user(user_id):
 @app.route("/delete-questions/<int:id>", methods=["DELETE"])
 def delete_question(id):
     try:
-        ids, _, _ = readUserData()
+        ids, _, _ = readData(0)
         if id in ids:
-            deleteQuesData(id)
+            deleteData(0, id)
             return jsonify({"message": "Question deleted successfully"})
         else:
             return jsonify({"error": "Question not found"}), 404
@@ -168,9 +164,9 @@ def delete_question(id):
 @app.route("/delete-users/<int:id>", methods=["DELETE"])
 def delete_user(id):
     try:
-        ids, _, _ = readUserData()
+        ids, _, _ = readData(1)
         if id in ids:
-            deleteUserData(id)
+            deleteData(1, id)
             return jsonify({"message": "User deleted successfully"})
         else:
             return jsonify({"error": "User not found"}), 404
@@ -189,7 +185,7 @@ def add_question():
         if not question or not answer:
             return jsonify({"error": "Missing question or answer"}), 400
 
-        addQuesToDatabase(question, answer)
+        addData(0, question, answer)
         return jsonify({"message": "Question added successfully"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -206,17 +202,45 @@ def add_user():
         if not username or not password:
             return jsonify({"error": "Missing username or password"}), 400
 
-        _, usernames, _ = readUserData()
+        _, usernames, _ = readData(1)
 
         hashedPassword = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
         if username not in usernames:
-            addUserToDatabase(username, hashedPassword)
+            addData(1, username, hashedPassword)
             return jsonify({"message": "User added successfully"})
         else:
             return jsonify({"error": "User already exists"}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+# # Function used to upload excel file to webpage and insert data in it to SQL database
+# @app.route("/upload", methods=["GET", "POST"])
+# def upload():
+#     if request.method == "POST":
+#         file = request.files["fileInsert"]
+#         # If file is uploaded and if file is of excel format
+#         if file and allowed_file(file.filename):
+#             # Creates a temporary file for the uploaded file in order to read and manage it
+#             filepath = f"/tmp/{file.filename}"
+#             file.save(filepath)
+
+#             # Reads file and then deletes it from storage
+#             data = readExcel(filepath)
+#             os.remove(filepath)
+
+#             # Data is stored in form of nested list with index [0] for questions, index [1] for answers
+#             # Loops over all data adding each one by one
+#             # This could be a point to improve performance since it is O(n) for reading data and then adding it.
+#             for i in data:
+#                 addToDatabase(i[0], i[1])
+
+#             return redirect(url_for("crud"))
+
+#         else:
+#             flash("Invalid file format. Please upload an Excel file.")
+#             return redirect(url_for("crud"))
 
 
 if __name__ == "__main__":
