@@ -1,5 +1,10 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    jwt_required,
+)
 from chatBot import chatBot
 from crudOperations import (
     readQuesData,
@@ -12,10 +17,16 @@ from crudOperations import (
     updateUserData,
 )
 from flask_bcrypt import bcrypt
+from datetime import timedelta
 
 app = Flask(__name__)
-CORS(app)
+app.config["JWT_SECRET_KEY"] = (
+    "your_jwt_secret_key"  # Change this to a random secret key
+)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=10)
 
+jwt = JWTManager(app)
+CORS(app)
 # Functions are presented in order of use.
 
 
@@ -41,22 +52,22 @@ def sign_in():
 
         if not username or not password:
             return jsonify({"error": "Missing username or password"}), 400
-        ids, users, passwords = readUserData()
 
-        print(passwords[users.index(username)])
+        ids, users, passwords = readUserData()
 
         if username in users and bcrypt.checkpw(
             password.encode("utf-8"), passwords[users.index(username)].encode("utf-8")
         ):
-            return jsonify({"message": "Sign-in successful"})
+            access_token = create_access_token(identity=username)
+            return jsonify({"message": "Sign-in successful", "token": access_token})
         else:
             return jsonify({"error": "Invalid username or password"}), 401
     except Exception as e:
         return jsonify(error=str(e)), 500
 
 
-# Function responsible for fetching all questions from database, used in chatbotModal and in admin page.
 @app.route("/fetch-questions", methods=["GET"])
+@jwt_required()
 def fetch_questions():
     try:
         ids, questions, answers = readQuesData()
@@ -71,8 +82,8 @@ def fetch_questions():
         return jsonify(error=str(e)), 500
 
 
-# Function responsible for fetching all usernames and password from database, used in admin page.
 @app.route("/fetch-users", methods=["GET"])
+@jwt_required()
 def fetch_users():
     try:
         ids, users, passwords = readUserData()

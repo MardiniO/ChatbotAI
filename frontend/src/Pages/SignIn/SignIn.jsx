@@ -22,6 +22,7 @@ const SignIn = () => {
       const data = await response.json();
       if (response.ok) {
         setMessage(data.message);
+        localStorage.setItem("token", data.token); // Store the token in local storage
         navigateTo("/admin");
       } else {
         setMessage(data.error);

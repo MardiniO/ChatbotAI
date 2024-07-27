@@ -6,8 +6,9 @@ import FilterComponent, {
 } from "../../Components/FilterComponent/FilterComponent";
 import FlashMessage from "../../Components/FlashMessage/FlashMessage"; // Import FlashMessage
 import "./Admin.css";
+import { useNavigate } from "react-router-dom";
 
-const Modal = ({ show, onClose, onSave, data, mode }) => {
+const Modal = ({ show, onClose, onSave, data, mode, isAddMode }) => {
   const [input1, setInput1] = useState(data.input1 || "");
   const [input2, setInput2] = useState(data.input2 || "");
 
@@ -29,7 +30,15 @@ const Modal = ({ show, onClose, onSave, data, mode }) => {
     <div className="modal">
       <div className="modal-content">
         <div className="modalHeader">
-          <h2>{mode === "questions" ? "Update Question" : "Update User"}</h2>
+          <h2>
+            {isAddMode
+              ? mode === "questions"
+                ? "Add Question"
+                : "Add User"
+              : mode === "questions"
+              ? "Update Question"
+              : "Update User"}
+          </h2>
           <span className="close" onClick={onClose}>
             &times;
           </span>
@@ -73,27 +82,49 @@ const Admin = () => {
   const [flashMessage, setFlashMessage] = useState(""); // Flash message state
   const [flashType, setFlashType] = useState("success"); // Flash message type
   const [firstUser, setFirstUser] = useState(null); // State to store the first user
+  const [isAddMode, setIsAddMode] = useState(true); // State to determine add or update mode
+  const navigateTo = useNavigate();
 
   useEffect(() => {
-    fetchData();
-    if (mode === "users") {
-      fetchFirstUser();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigateTo("/signin");
+    } else {
+      fetchData();
+      if (mode === "users") {
+        fetchFirstUser();
+      }
     }
   }, [mode]);
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://127.0.0.1:5000/fetch-${mode}`);
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      const response = await axios.get(`http://127.0.0.1:5000/fetch-${mode}`, {
+        headers,
+      });
       const data = response.data.data;
       setData(data);
     } catch (error) {
       console.error(`Error fetching ${mode}:`, error);
+      if (error.response && error.response.status === 401) {
+        navigateTo("/signin");
+      }
     }
   };
 
   const fetchFirstUser = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/fetch-users");
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      const response = await axios.get("http://127.0.0.1:5000/fetch-users", {
+        headers,
+      });
       if (response.data.data.length > 0) {
         setFirstUser(response.data.data[0]);
       }
@@ -109,6 +140,7 @@ const Admin = () => {
       input1: mode === "questions" ? row.question : row.username,
       input2: mode === "questions" ? row.answer : row.password,
     });
+    setIsAddMode(false); // Set to update mode
   };
 
   const handleDelete = async (row) => {
@@ -118,7 +150,13 @@ const Admin = () => {
       return;
     }
     try {
-      await axios.delete(`http://127.0.0.1:5000/delete-${mode}/${row.id}`);
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      await axios.delete(`http://127.0.0.1:5000/delete-${mode}/${row.id}`, {
+        headers,
+      });
       setFlashMessage("Data deleted successfully.");
       setFlashType("success");
       fetchData();
@@ -131,18 +169,26 @@ const Admin = () => {
 
   const handleSave = async (updatedData) => {
     try {
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
       // Check if ID is present for update, otherwise, add new entry
       if (updatedData.id) {
         const endpoint =
           mode === "questions" ? "update-question" : "update-user";
         const url = `http://127.0.0.1:5000/${endpoint}/${updatedData.id}`;
 
-        await axios.put(url, {
-          question: mode === "questions" ? updatedData.input1 : undefined,
-          answer: mode === "questions" ? updatedData.input2 : undefined,
-          username: mode === "users" ? updatedData.input1 : undefined,
-          password: mode === "users" ? updatedData.input2 : undefined,
-        });
+        await axios.put(
+          url,
+          {
+            question: mode === "questions" ? updatedData.input1 : undefined,
+            answer: mode === "questions" ? updatedData.input2 : undefined,
+            username: mode === "users" ? updatedData.input1 : undefined,
+            password: mode === "users" ? updatedData.input2 : undefined,
+          },
+          { headers }
+        );
 
         setFlashMessage("Data updated successfully."); // Set flash message
         setFlashType("success");
@@ -150,12 +196,16 @@ const Admin = () => {
         const endpoint = mode === "questions" ? "add-question" : "add-user";
         const url = `http://127.0.0.1:5000/${endpoint}`;
 
-        await axios.post(url, {
-          question: mode === "questions" ? updatedData.input1 : undefined,
-          answer: mode === "questions" ? updatedData.input2 : undefined,
-          username: mode === "users" ? updatedData.input1 : undefined,
-          password: mode === "users" ? updatedData.input2 : undefined,
-        });
+        await axios.post(
+          url,
+          {
+            question: mode === "questions" ? updatedData.input1 : undefined,
+            answer: mode === "questions" ? updatedData.input2 : undefined,
+            username: mode === "users" ? updatedData.input1 : undefined,
+            password: mode === "users" ? updatedData.input2 : undefined,
+          },
+          { headers }
+        );
 
         setFlashMessage("Data added successfully."); // Set flash message
         setFlashType("success");
@@ -170,9 +220,10 @@ const Admin = () => {
     }
   };
 
-  const handleAdd = async () => {
+  const handleAdd = () => {
     setShowModal(true);
     setCurrentData({ id: null, input1: "", input2: "" });
+    setIsAddMode(true); // Set to add mode
   };
 
   const handleSwitchDatabase = () => {
@@ -181,6 +232,11 @@ const Admin = () => {
 
   const handleCloseFlashMessage = () => {
     setFlashMessage("");
+  };
+
+  const handleLogOut = () => {
+    localStorage.removeItem("token");
+    navigateTo("/signin");
   };
 
   const filteredData = useFilter(data, filterText);
@@ -230,6 +286,11 @@ const Admin = () => {
             <button> Import data </button>
             <button> Export data </button>
           </div>
+          <div className="buttonSeparator" />
+          <button onClick={handleLogOut} className="switchButton">
+            {" "}
+            Logout{" "}
+          </button>
         </div>
         <div className="adminBody">
           <div className="adminHeader">
@@ -256,6 +317,7 @@ const Admin = () => {
         onSave={handleSave}
         data={currentData}
         mode={mode}
+        isAddMode={isAddMode} // Pass isAddMode to Modal
       />
       <FlashMessage
         message={flashMessage}
