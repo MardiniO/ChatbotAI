@@ -1,10 +1,16 @@
 from flask import Flask, request, jsonify
+
+# Cross-Origin Resource Sharing
 from flask_cors import CORS
+
+# Flask Token Authentication
 from flask_jwt_extended import (
     JWTManager,
     create_access_token,
     jwt_required,
 )
+from datetime import timedelta
+
 from chatBot import chatBot
 from crudOperations import (
     readQuesData,
@@ -16,14 +22,15 @@ from crudOperations import (
     deleteUserData,
     updateUserData,
 )
+
+# Password encryption
 from flask_bcrypt import bcrypt
-from datetime import timedelta
 
 app = Flask(__name__)
-app.config["JWT_SECRET_KEY"] = (
-    "your_jwt_secret_key"  # Change this to a random secret key
-)
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=10)
+app.config["JWT_SECRET_KEY"] = "your_jwt_secret_key"
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(
+    minutes=10
+)  ## Sets expiry time for token, in this case 10 minutes.
 
 jwt = JWTManager(app)
 CORS(app)
@@ -53,7 +60,7 @@ def sign_in():
         if not username or not password:
             return jsonify({"error": "Missing username or password"}), 400
 
-        ids, users, passwords = readUserData()
+        _, users, passwords = readUserData()
 
         if username in users and bcrypt.checkpw(
             password.encode("utf-8"), passwords[users.index(username)].encode("utf-8")
@@ -66,6 +73,7 @@ def sign_in():
         return jsonify(error=str(e)), 500
 
 
+# Function responsible for fetching all data from QuesAns database
 @app.route("/fetch-questions", methods=["GET"])
 @jwt_required()
 def fetch_questions():
@@ -82,6 +90,7 @@ def fetch_questions():
         return jsonify(error=str(e)), 500
 
 
+# Function responsible for fetching all data from UserPass database
 @app.route("/fetch-users", methods=["GET"])
 @jwt_required()
 def fetch_users():
@@ -141,17 +150,21 @@ def update_user(user_id):
         return jsonify({"error": str(e)}), 500
 
 
-# Function responsible for deleting question in database.
+# Function responsible for deleting question and answer in database.
 @app.route("/delete-questions/<int:id>", methods=["DELETE"])
 def delete_question(id):
     try:
-        deleteQuesData(id)
-        return jsonify({"message": "Question deleted successfully"})
+        ids, _, _ = readUserData()
+        if id in ids:
+            deleteQuesData(id)
+            return jsonify({"message": "Question deleted successfully"})
+        else:
+            return jsonify({"error": "Question not found"}), 404
     except Exception as e:
         return jsonify(error=str(e)), 500
 
 
-# Function responsible for deleting usernames and passwords in database.
+# Function responsible for deleting username and password in database.
 @app.route("/delete-users/<int:id>", methods=["DELETE"])
 def delete_user(id):
     try:
@@ -165,6 +178,7 @@ def delete_user(id):
         return jsonify(error=str(e)), 500
 
 
+# Function responsible for addition of data to QuesAns database
 @app.route("/add-question", methods=["POST"])
 def add_question():
     try:
@@ -181,6 +195,7 @@ def add_question():
         return jsonify({"error": str(e)}), 500
 
 
+# Function responsible for addition of data to UserPass database
 @app.route("/add-user", methods=["POST"])
 def add_user():
     try:
