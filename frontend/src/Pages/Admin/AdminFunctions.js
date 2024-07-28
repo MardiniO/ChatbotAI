@@ -168,3 +168,39 @@ export const handleLogOut = (navigateTo) => {
   localStorage.removeItem("token");
   navigateTo("/signin");
 };
+
+// Function to clear the database
+export const handleClearDatabase = async (
+  mode,
+  setFlashMessage,
+  setFlashType,
+  fetchData,
+  setData,
+  navigateTo
+) => {
+  try {
+    const token = localStorage.getItem("token");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    // Store the response of the Axios request in a variable
+    const response = await axios.delete(
+      `http://localhost:5000/clear-database/${mode}`,
+      {
+        headers,
+      }
+    );
+
+    // Access response.data.message
+    if (response.data.message) {
+      setFlashMessage(response.data.message);
+      setFlashType("success");
+      fetchData(mode, setData, navigateTo); // Refresh data after clearing the database
+    }
+  } catch (error) {
+    console.log(error);
+    setFlashMessage(error.response?.data?.error || "Clearing database failed");
+    setFlashType("error");
+  }
+};

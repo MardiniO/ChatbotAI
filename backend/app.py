@@ -1,5 +1,9 @@
 from flask import Flask, request, jsonify
 
+import pandas as pd
+from flask import send_file
+from io import BytesIO
+
 # Cross-Origin Resource Sharing
 from flask_cors import CORS
 
@@ -17,6 +21,7 @@ from crudOperations import (
     readData,
     updateData,
     deleteData,
+    clearData,
 )
 
 # Password encryption
@@ -25,7 +30,7 @@ from flask_bcrypt import bcrypt
 app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = "your_jwt_secret_key"
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(
-    minutes=10
+    minutes=30
 )  ## Sets expiry time for token, in this case 10 minutes.
 
 jwt = JWTManager(app)
@@ -33,6 +38,9 @@ CORS(app)
 
 
 # Functions are presented in order of use.
+
+
+### Chatbot ###
 
 
 # Function that receives input from user in ChatbotUI then sends response back.
@@ -45,6 +53,12 @@ def receive_data():
         return jsonify({"received": response_message})
     except Exception as e:
         return jsonify(error=str(e)), 500
+
+
+###
+
+
+### Sign-in + Admin CRUD Functions ###
 
 
 # Function responsible for signing in to admin page.
@@ -77,7 +91,7 @@ def fetch_questions():
     try:
         ids, questions, answers = readData(0)
         if not questions or not answers:
-            return jsonify(error="No questions or answers found"), 404
+            return jsonify(data=[], message="No questions or answers found"), 200
         data = [
             {"id": ids[i], "question": questions[i], "answer": answers[i]}
             for i in range(len(questions))
@@ -216,32 +230,94 @@ def add_user():
         return jsonify({"error": str(e)}), 500
 
 
-# # Function used to upload excel file to webpage and insert data in it to SQL database
-# @app.route("/upload", methods=["GET", "POST"])
-# def upload():
-#     if request.method == "POST":
-#         file = request.files["fileInsert"]
-#         # If file is uploaded and if file is of excel format
-#         if file and allowed_file(file.filename):
-#             # Creates a temporary file for the uploaded file in order to read and manage it
-#             filepath = f"/tmp/{file.filename}"
-#             file.save(filepath)
+@app.route("/clear-database/<string:mode>", methods=["DELETE"])
+@jwt_required()
+def clear_database(mode):
+    try:
+        if mode == "questions":
+            clearData(0)
+        elif mode == "users":
+            clearData(1)
+        else:
+            return jsonify({"error": "Invalid mode"}), 400
 
-#             # Reads file and then deletes it from storage
-#             data = readExcel(filepath)
-#             os.remove(filepath)
+        return jsonify(
+            {"message": f"{mode.capitalize()} database cleared successfully"}
+        ), 200
 
-#             # Data is stored in form of nested list with index [0] for questions, index [1] for answers
-#             # Loops over all data adding each one by one
-#             # This could be a point to improve performance since it is O(n) for reading data and then adding it.
-#             for i in data:
-#                 addToDatabase(i[0], i[1])
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-#             return redirect(url_for("crud"))
 
-#         else:
-#             flash("Invalid file format. Please upload an Excel file.")
-#             return redirect(url_for("crud"))
+### Import/Export
+
+
+# Check if the uploaded file is an Excel file
+def allowed_file(filename):
+    return filename.endswith(".xlsx") or filename.endswith(".xls")
+
+
+# Export data from the database to an Excel file
+@app.route("/export-data/<string:mode>", methods=["GET"])
+def export_data(mode):
+    try:
+        if mode == "questions":
+            ids, questions, answers = readData(0)
+            df = pd.DataFrame({"ID": ids, "Question": questions, "Answer": answers})
+        elif mode == "users":
+            ids, users, passwords = readData(1)
+            df = pd.DataFrame({"ID": ids, "Username": users, "Password": passwords})
+        else:
+            return jsonify({"error": "Invalid mode"}), 400
+
+        # Save the DataFrame to a BytesIO object and send it
+        output = BytesIO()
+        df.to_excel(output, index=False)
+        output.seek(0)
+        return send_file(output, as_attachment=True, download_name=f"{mode}.xlsx")
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# Import data from an Excel file and save it to the database
+@app.route("/import-data/<string:mode>", methods=["POST"])
+def import_data(mode):
+    if "file" not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "No file selected"}), 400
+
+    if file and allowed_file(file.filename):
+        try:
+            # Read the Excel file into a DataFrame
+            df = pd.read_excel(file)
+
+            # Extract the appropriate columns and save them to the database
+            if mode == "questions":
+                for _, row in df.iterrows():
+                    question = row.get("Question")
+                    answer = row.get("Answer")
+                    if pd.notna(question) and pd.notna(answer):
+                        addData(0, question, answer)
+            elif mode == "users":
+                for _, row in df.iterrows():
+                    username = row.get("Username")
+                    password = row.get("Password")
+                    if pd.notna(username) and pd.notna(password):
+                        hashed_password = bcrypt.hashpw(
+                            password.encode("utf-8"), bcrypt.gensalt()
+                        )
+                        addData(1, username, hashed_password)
+            else:
+                return jsonify({"error": "Invalid mode"}), 400
+
+            return jsonify({"message": "Data imported successfully"})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    else:
+        return jsonify({"error": "Invalid file format"}), 400
 
 
 if __name__ == "__main__":

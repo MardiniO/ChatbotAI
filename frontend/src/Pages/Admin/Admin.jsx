@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Admin.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import FilterComponent, {
 } from "../../Components/FilterComponent/FilterComponent";
 import FlashMessage from "../../Components/FlashMessage/FlashMessage";
 import AdminModal from "../../Components/AdminModal/AdminModal";
+import { saveAs } from "file-saver"; // Import file-saver
 
 // Importing functions from AdminFunctions.js
 import {
@@ -18,6 +19,7 @@ import {
   handleSave,
   handleSwitchDatabase,
   handleLogOut,
+  handleClearDatabase, // Import the function
 } from "./AdminFunctions";
 
 const Admin = () => {
@@ -49,6 +51,9 @@ const Admin = () => {
   // Responsible for redirecting to different pages.
   const navigateTo = useNavigate();
 
+  // Ref for file input to trigger click event programmatically
+  const fileInputRef = useRef();
+
   // Fetches first user.
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -74,6 +79,64 @@ const Admin = () => {
   };
 
   const filteredData = useFilter(data, filterText); // Stores filtered data to be fed into datatable.
+
+  // Handle importing data from an Excel file
+  const handleImport = async (event) => {
+    const file = event.target.files[0];
+    if (!file) {
+      setFlashMessage("No file selected");
+      setFlashType("error");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/import-data/${mode}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.data.message) {
+        setFlashMessage(response.data.message);
+        setFlashType("success");
+        fetchData(mode, setData, navigateTo); // Refresh data after import
+      }
+    } catch (error) {
+      setFlashMessage(error.response?.data?.error || "Import failed");
+      setFlashType("error");
+    }
+  };
+
+  // Handle exporting data to an Excel file
+  const handleExport = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/export-data/${mode}`,
+        {
+          responseType: "blob",
+        }
+      );
+
+      // Save the file using file-saver
+      const filename = mode === "questions" ? "questions.xlsx" : "users.xlsx";
+      saveAs(response.data, filename);
+    } catch (error) {
+      setFlashMessage("Export failed");
+      setFlashType("error");
+    }
+  };
+
+  // Trigger file input click
+  const triggerFileInput = () => {
+    fileInputRef.current.click();
+  };
 
   // Columns for datatable
   // Depending on mode, sets column title
@@ -146,15 +209,36 @@ const Admin = () => {
           <div className="buttonSeparator" />
           <div className="databaseControl">
             <button onClick={handleAdd}>Add</button>
-            <button> Import data </button>
-            <button> Export data </button>
+            <input
+              type="file"
+              accept=".xlsx, .xls"
+              style={{ display: "none" }}
+              ref={fileInputRef} // Use ref instead of id
+              onChange={handleImport}
+            />
+            <button onClick={triggerFileInput} className="importButton">
+              Import data
+            </button>
+            <button onClick={handleExport}>Export data</button>
+            <button
+              onClick={() =>
+                handleClearDatabase(
+                  mode,
+                  setFlashMessage,
+                  setFlashType,
+                  fetchData,
+                  setData,
+                  navigateTo
+                )
+              }>
+              Clear database
+            </button>
           </div>
           <div className="buttonSeparator" />
           <button
             onClick={() => handleLogOut(navigateTo)}
-            className="switchButton">
-            {" "}
-            Logout{" "}
+            className="logoutButton">
+            Logout
           </button>
         </div>
         <div className="adminBody">

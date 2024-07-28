@@ -123,6 +123,38 @@ def deleteData(databaseName, givenID):
     return None
 
 
+def clearData(databaseName):
+    try:
+        # Connect to the database
+        conn = connectToDatabase()
+        myCursor = conn.cursor()
+
+        if databaseName == 0:
+            mySQLClear = """DELETE FROM QuesAns"""
+            myCursor.execute(mySQLClear)
+            conn.commit()  # Commit the transaction
+            return "QuesAns table cleared successfully"
+        elif databaseName == 1:
+            mySQLClear = """DELETE FROM UserPass"""
+            myCursor.execute(mySQLClear)
+            conn.commit()  # Commit the transaction
+            return "UserAns cleared successfully"
+        else:
+            return "Invalid database selection"
+
+    except Exception as e:
+        # Handle exceptions
+        print(f"An error occurred: {e}")
+        return f"An error occurred: {str(e)}"
+
+    finally:
+        # Ensure the connection is closed properly
+        if myCursor:
+            myCursor.close()
+        if conn:
+            conn.close()
+
+
 # Function that returns data from database with all data joined in one list
 # Lowks forgot where this is used. Keeping it just in case.
 # READ OPERATION
