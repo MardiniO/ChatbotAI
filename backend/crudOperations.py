@@ -132,12 +132,12 @@ def clearData(databaseName):
         if databaseName == 0:
             mySQLClear = """DELETE FROM QuesAns"""
             myCursor.execute(mySQLClear)
-            conn.commit()  # Commit the transaction
+            conn.commit()
             return "QuesAns table cleared successfully"
         elif databaseName == 1:
             mySQLClear = """DELETE FROM UserPass"""
             myCursor.execute(mySQLClear)
-            conn.commit()  # Commit the transaction
+            conn.commit()
             return "UserAns cleared successfully"
         else:
             return "Invalid database selection"
