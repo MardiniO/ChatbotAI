@@ -1,0 +1,85 @@
+/* Modal overlay styling */
+.adminModal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.adminModal-header {
+  height: 10%;
+  position: relative;
+  align-items: center;
+}
+
+/* CSS styling and positioning for "&times" or close button */
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 98%;
+  transform: translateY(-80%);
+}
+
+/* Modal content styling */
+.adminModal-content {
+  background-color: white;
+  padding: 2%;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 8px;
+  height: fit-content;
+}
+
+/* Form group(text fields) styling */
+.adminModal-formGroup {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0 10px 0;
+}
+
+/* Input field styling */
+.adminModal-formGroup input {
+  width: 100%;
+  padding: 2%;
+  border-radius: 10px;
+  border: 1px;
+  border-style: solid;
+  margin: 10px auto 0 auto;
+}
+
+/* Button container for centering submit button */
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+}
+
+/* Submit button styling */
+.adminSubmit {
+  padding: 2%;
+  border: 1px solid #888;
+  border-radius: 10px;
+  background-color: default;
+  color: black;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 150px;
+  text-align: center;
+  margin: 10px auto 0;
+}
+
+/* Hover effect for submit button */
+.adminSubmit:hover {
+  background-color: #888;
+}

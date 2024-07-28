@@ -51,14 +51,22 @@
   border-radius: 1rem;
 }
 
+.databaseControl {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 .databaseControl button {
   width: 10rem;
   height: 38px;
   border-radius: 10px;
   border: 1px;
   border-style: solid;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: auto !important;
+  margin-right: auto !important;
   margin-bottom: 12px;
 }
 
@@ -80,7 +88,7 @@
 .adminHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Center the content vertically */
+  align-items: center;
   padding: 10px 0px 10px 0px;
   border: 1px;
 }
@@ -112,72 +120,4 @@
   margin: 5px;
   padding: 2%;
   width: 75px;
-}
-
-/* Modal overlay styling */
-.modal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-/* Modal content styling */
-.modal-content {
-  background-color: white;
-  padding: 2%;
-  border: 1px solid #888;
-  width: 80%;
-  max-width: 600px;
-  border-radius: 8px;
-  height: fit-content;
-}
-
-/* Form group styling */
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin: 10px 0 10px 0;
-}
-
-/* Input field styling */
-.form-group input {
-  width: 100%;
-  padding: 2%;
-  border-radius: 10px;
-  border: 1px;
-  border-style: solid;
-  margin: 10px auto 0 auto; /* Center input fields */
-}
-
-/* Button container for centering submit button */
-.buttonContainer {
-  display: flex;
-  justify-content: center;
-}
-
-/* Submit button styling */
-.adminSubmit {
-  padding: 2%;
-  border: 1px solid #888;
-  border-radius: 10px;
-  background-color: default;
-  color: black;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  width: 150px; /* Set a fixed width */
-  text-align: center;
-  margin: 10px auto 0; /* Center the submit button */
-}
-
-/* Hover effect for submit button */
-.adminSubmit:hover {
-  background-color: #888;
 }

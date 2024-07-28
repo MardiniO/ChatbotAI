@@ -2,10 +2,12 @@ import React from "react";
 
 import "./About.css";
 
+// About page. Simple.
+
 const About = () => {
   return (
     <>
-      <div className="cardHeader">
+      <div className="aboutHeader">
         <h2> About this project </h2>
       </div>
       <div className="aboutBody">

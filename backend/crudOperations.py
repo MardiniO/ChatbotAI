@@ -15,12 +15,14 @@ def connectToDatabase():
 
 # databaseName added for sake of simplifying and reducing code.
 # 0 corresponding to QuesAns, 1 corresponding to UserPass.
+# Code can further be reduced by changing database name inside of SQL query.
+# However, it caused some issues. Current method is fine.
 
 
 # CREATE OPERATION
 # Function that adds data to the database
 def addData(databaseName, databaseInput1, databaseInput2):
-    # Connecting to database and storing existing IDs, questions, and answers
+    # Connecting to database and storing existing IDs, data column 1, and data column 2
     conn = connectToDatabase()
     cursor = conn.cursor()
 
@@ -50,8 +52,8 @@ def readData(databaseName):
     conn = connectToDatabase()
     myCursor = conn.cursor()
 
+    # Initializing lists that store the separate data of the database, (ids, input1, input2)
     if databaseName == 0:
-        # Initializing lists that store the separate data of the database
         column1, column2, column3 = ([] for _ in range(3))
 
         myCursor.execute("select * from QuesAns")
@@ -63,7 +65,6 @@ def readData(databaseName):
         conn.close()
         return column1, column2, column3
     else:
-        # Initializing lists that store the separate data of the database
         column1, column2, column3 = ([] for _ in range(3))
 
         myCursor.execute("select * from UserPass")

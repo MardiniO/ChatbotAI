@@ -1,246 +1,82 @@
 import React, { useState, useEffect } from "react";
+import "./Admin.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import FilterComponent, {
   useFilter,
 } from "../../Components/FilterComponent/FilterComponent";
-import FlashMessage from "../../Components/FlashMessage/FlashMessage"; // Import FlashMessage
-import "./Admin.css";
-import { useNavigate } from "react-router-dom";
+import FlashMessage from "../../Components/FlashMessage/FlashMessage";
+import AdminModal from "../../Components/AdminModal/AdminModal";
 
-const Modal = ({ show, onClose, onSave, data, mode, isAddMode }) => {
-  const [input1, setInput1] = useState(data.input1 || "");
-  const [input2, setInput2] = useState(data.input2 || "");
-
-  useEffect(() => {
-    setInput1(data.input1 || "");
-    setInput2(data.input2 || "");
-  }, [data]);
-
-  if (!show) {
-    return null;
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave({ id: data.id, input1, input2 }); // Make sure to pass the id
-  };
-
-  return (
-    <div className="modal">
-      <div className="modal-content">
-        <div className="modalHeader">
-          <h2>
-            {isAddMode
-              ? mode === "questions"
-                ? "Add Question"
-                : "Add User"
-              : mode === "questions"
-              ? "Update Question"
-              : "Update User"}
-          </h2>
-          <span className="close" onClick={onClose}>
-            &times;
-          </span>
-        </div>
-        <form onSubmit={handleSubmit} className="formContent">
-          <div className="form-group">
-            <label>{mode === "questions" ? "Question" : "User"}</label>
-            <input
-              type="text"
-              value={input1}
-              placeholder={mode === "questions" ? "Question" : "User"}
-              onChange={(e) => setInput1(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label>{mode === "questions" ? "Answer" : "Password"}</label>
-            <input
-              type="text"
-              value={input2}
-              placeholder={mode === "questions" ? "Answer" : "Password"}
-              onChange={(e) => setInput2(e.target.value)}
-            />
-          </div>
-          <div className="buttonContainer">
-            <button type="submit" className="adminSubmit">
-              Submit
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
+// Importing functions from AdminFunctions.js
+import {
+  fetchData,
+  fetchFirstUser,
+  handleUpdate,
+  handleDelete,
+  handleSave,
+  handleSwitchDatabase,
+  handleLogOut,
+} from "./AdminFunctions";
 
 const Admin = () => {
+  // Variables to set initial data and then filtered data.
   const [data, setData] = useState([]);
   const [filterText, setFilterText] = useState("");
+
+  // Responsible for either showing or hiding the modal.
   const [showModal, setShowModal] = useState(false);
-  const [currentData, setCurrentData] = useState({});
+
+  // "mode" used to differentiate functions depending on which database is shown.
+  // E.G: if QuesAns shown, add-question is utilized instead of add-user.
+  // Initially set to questions.
   const [mode, setMode] = useState("questions");
-  const [flashMessage, setFlashMessage] = useState(""); // Flash message state
-  const [flashType, setFlashType] = useState("success"); // Flash message type
-  const [firstUser, setFirstUser] = useState(null); // State to store the first user
-  const [isAddMode, setIsAddMode] = useState(true); // State to determine add or update mode
+  // currentData is responsible for adding/updating either QuesAns or UserPass data.
+  const [currentData, setCurrentData] = useState({});
+  // isAddMode responsible for changing the characteristics of modal when either
+  // add or update button is pressed.
+  const [isAddMode, setIsAddMode] = useState(true);
+
+  // Stores firstUser as default to prevent it from being deleted.
+  const [firstUser, setFirstUser] = useState(null);
+
+  // States for flashMesssage, determine the message displayed in the flash message.
+  // Also determines the color of the flash message depending on success or failure.
+  const [flashMessage, setFlashMessage] = useState("");
+  const [flashType, setFlashType] = useState("success");
+
+  // Responsible for redirecting to different pages.
   const navigateTo = useNavigate();
 
+  // Fetches first user.
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigateTo("/signin");
     } else {
-      fetchData();
+      fetchData(mode, setData, navigateTo);
       if (mode === "users") {
-        fetchFirstUser();
+        fetchFirstUser(setFirstUser);
       }
     }
   }, [mode]);
 
-  const fetchData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-      const response = await axios.get(`http://127.0.0.1:5000/fetch-${mode}`, {
-        headers,
-      });
-      const data = response.data.data;
-      setData(data);
-    } catch (error) {
-      console.error(`Error fetching ${mode}:`, error);
-      if (error.response && error.response.status === 401) {
-        navigateTo("/signin");
-      }
-    }
-  };
-
-  const fetchFirstUser = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-      const response = await axios.get("http://127.0.0.1:5000/fetch-users", {
-        headers,
-      });
-      if (response.data.data.length > 0) {
-        setFirstUser(response.data.data[0]);
-      }
-    } catch (error) {
-      console.error("Error fetching the first user:", error);
-    }
-  };
-
-  const handleUpdate = (row) => {
-    setShowModal(true);
-    setCurrentData({
-      id: row.id,
-      input1: mode === "questions" ? row.question : row.username,
-      input2: mode === "questions" ? row.answer : row.password,
-    });
-    setIsAddMode(false); // Set to update mode
-  };
-
-  const handleDelete = async (row) => {
-    if (mode === "users" && firstUser && row.id === firstUser.id) {
-      setFlashMessage("Default user cannot be deleted.");
-      setFlashType("error");
-      return;
-    }
-    try {
-      const token = localStorage.getItem("token");
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-      await axios.delete(`http://127.0.0.1:5000/delete-${mode}/${row.id}`, {
-        headers,
-      });
-      setFlashMessage("Data deleted successfully.");
-      setFlashType("success");
-      fetchData();
-    } catch (error) {
-      setFlashMessage("Error deleting data.");
-      setFlashType("error");
-      console.error(`Error deleting ${mode}:`, error);
-    }
-  };
-
-  const handleSave = async (updatedData) => {
-    try {
-      const token = localStorage.getItem("token");
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-      // Check if ID is present for update, otherwise, add new entry
-      if (updatedData.id) {
-        const endpoint =
-          mode === "questions" ? "update-question" : "update-user";
-        const url = `http://127.0.0.1:5000/${endpoint}/${updatedData.id}`;
-
-        await axios.put(
-          url,
-          {
-            question: mode === "questions" ? updatedData.input1 : undefined,
-            answer: mode === "questions" ? updatedData.input2 : undefined,
-            username: mode === "users" ? updatedData.input1 : undefined,
-            password: mode === "users" ? updatedData.input2 : undefined,
-          },
-          { headers }
-        );
-
-        setFlashMessage("Data updated successfully."); // Set flash message
-        setFlashType("success");
-      } else {
-        const endpoint = mode === "questions" ? "add-question" : "add-user";
-        const url = `http://127.0.0.1:5000/${endpoint}`;
-
-        await axios.post(
-          url,
-          {
-            question: mode === "questions" ? updatedData.input1 : undefined,
-            answer: mode === "questions" ? updatedData.input2 : undefined,
-            username: mode === "users" ? updatedData.input1 : undefined,
-            password: mode === "users" ? updatedData.input2 : undefined,
-          },
-          { headers }
-        );
-
-        setFlashMessage("Data added successfully."); // Set flash message
-        setFlashType("success");
-      }
-
-      setShowModal(false);
-      fetchData(); // Refresh data after save
-    } catch (error) {
-      setFlashMessage("Error saving data."); // Set flash message
-      setFlashType("error");
-      console.error(`Error saving ${mode}:`, error);
-    }
-  };
-
+  // Blank text fields on modal when add button is pressed.
   const handleAdd = () => {
     setShowModal(true);
     setCurrentData({ id: null, input1: "", input2: "" });
-    setIsAddMode(true); // Set to add mode
-  };
-
-  const handleSwitchDatabase = () => {
-    setMode((prevMode) => (prevMode === "questions" ? "users" : "questions"));
+    setIsAddMode(true);
   };
 
   const handleCloseFlashMessage = () => {
-    setFlashMessage("");
+    setFlashMessage(""); // Removes flash message on close.
   };
 
-  const handleLogOut = () => {
-    localStorage.removeItem("token");
-    navigateTo("/signin");
-  };
+  const filteredData = useFilter(data, filterText); // Stores filtered data to be fed into datatable.
 
-  const filteredData = useFilter(data, filterText);
-
+  // Columns for datatable
+  // Depending on mode, sets column title
   const columns = [
     {
       name: mode === "questions" ? "Question" : "Username",
@@ -261,8 +97,33 @@ const Admin = () => {
       cell: (row) => (
         <>
           <div className="actionButtonCont">
-            <button onClick={() => handleUpdate(row)}>Update</button>
-            <button onClick={() => handleDelete(row)}>Delete</button>
+            <button
+              onClick={() =>
+                handleUpdate(
+                  row,
+                  setShowModal,
+                  setCurrentData,
+                  setIsAddMode,
+                  mode
+                )
+              }>
+              Update
+            </button>
+            <button
+              onClick={() =>
+                handleDelete(
+                  row,
+                  mode,
+                  firstUser,
+                  setFlashMessage,
+                  setFlashType,
+                  fetchData,
+                  setData,
+                  navigateTo
+                )
+              }>
+              Delete
+            </button>
           </div>
         </>
       ),
@@ -277,7 +138,9 @@ const Admin = () => {
     <>
       <div className="adminPageCont">
         <div className="adminPanel">
-          <button onClick={handleSwitchDatabase} className="switchButton">
+          <button
+            onClick={() => handleSwitchDatabase(setMode)}
+            className="switchButton">
             Switch Database
           </button>
           <div className="buttonSeparator" />
@@ -287,7 +150,9 @@ const Admin = () => {
             <button> Export data </button>
           </div>
           <div className="buttonSeparator" />
-          <button onClick={handleLogOut} className="switchButton">
+          <button
+            onClick={() => handleLogOut(navigateTo)}
+            className="switchButton">
             {" "}
             Logout{" "}
           </button>
@@ -311,13 +176,24 @@ const Admin = () => {
           </div>
         </div>
       </div>
-      <Modal
+      <AdminModal
         show={showModal}
         onClose={() => setShowModal(false)}
-        onSave={handleSave}
+        onSave={(updatedData) =>
+          handleSave(
+            updatedData,
+            mode,
+            setFlashMessage,
+            setFlashType,
+            setShowModal,
+            fetchData,
+            setData,
+            navigateTo
+          )
+        }
         data={currentData}
         mode={mode}
-        isAddMode={isAddMode} // Pass isAddMode to Modal
+        isAddMode={isAddMode}
       />
       <FlashMessage
         message={flashMessage}

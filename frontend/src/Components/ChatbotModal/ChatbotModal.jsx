@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./Modal.css";
+import "./ChatbotModal.css";
 import DataTable from "react-data-table-component";
 import FilterComponent, { useFilter } from "../FilterComponent/FilterComponent"; // Import the combined component and hook
 
-const Modal = ({ isOpen, onClose }) => {
+// Modal component for chatbot when similarity is detected.
+
+const ChatbotModal = ({ isOpen, onClose }) => {
+  // Initial passed data into var: "data" = []
   const [data, setData] = useState([]);
+  // For the filtered data to be stored.
   const [filterText, setFilterText] = useState("");
 
   useEffect(() => {
+    // If button not pressed, return nothing (no modal).
     if (!isOpen) return;
 
+    // Fetch the Questions and Answers to display all articles or "madat".
     const fetchData = async () => {
       try {
         const response = await axios.get(
@@ -26,11 +32,11 @@ const Modal = ({ isOpen, onClose }) => {
     fetchData();
   }, [isOpen]);
 
+  // Custom hook from FilterComponent.jsx
   // Use the custom hook to get the filtered data
   const filteredData = useFilter(data, filterText);
 
-  if (!isOpen) return null;
-
+  // Initialization and Styling of columns of data table.
   const columns = [
     {
       name: "Question",
@@ -49,9 +55,10 @@ const Modal = ({ isOpen, onClose }) => {
   ];
 
   return (
-    <div className={`modal ${isOpen ? "show" : ""}`}>
-      <div className="modal-content">
-        <div className="modalHeader">
+    <div className={`chatbotModal ${isOpen ? "show" : ""}`}>
+      <div className="chatbotModal-content">
+        <div className="chatbotModal-header">
+          {/* Modal header contains close button in addition to search bar to filter data. */}
           <span className="close" onClick={onClose}>
             &times;
           </span>
@@ -61,7 +68,8 @@ const Modal = ({ isOpen, onClose }) => {
             className="searchComponent"
           />
         </div>
-        <div className="modalBody">
+        <div className="chatbotModal-body">
+          {/* Modal body only contains data table */}
           <DataTable
             columns={columns}
             data={filteredData}
@@ -77,4 +85,4 @@ const Modal = ({ isOpen, onClose }) => {
   );
 };
 
-export default Modal;
+export default ChatbotModal;

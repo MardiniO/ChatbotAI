@@ -30,6 +30,8 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(
 
 jwt = JWTManager(app)
 CORS(app)
+
+
 # Functions are presented in order of use.
 
 
@@ -71,7 +73,6 @@ def sign_in():
 
 # Function responsible for fetching all data from QuesAns database
 @app.route("/fetch-questions", methods=["GET"])
-@jwt_required()
 def fetch_questions():
     try:
         ids, questions, answers = readData(0)

@@ -4,9 +4,14 @@ import "./SignIn.css";
 import chatbotLogo from "../../assets/chatbot.png";
 
 const SignIn = () => {
+  // Text field input: username/password
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  // Text for error message such as "invalid password" etc.
+  // Message comes from backend.
   const [message, setMessage] = useState("");
+  // Redirect function.
   const navigateTo = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -17,7 +22,7 @@ const SignIn = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password }), // Sending the information
       });
       const data = await response.json();
       if (response.ok) {
