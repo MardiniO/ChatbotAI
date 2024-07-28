@@ -22,4 +22,4 @@ def readExcel(filepath):
 def allowed_file(filename):
     # Checks if there is a dot in the file name, then checks if the string after the dot belongs
     # to excel file extensions.
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'xls', 'xlsx'}
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in {"xls", "xlsx"}

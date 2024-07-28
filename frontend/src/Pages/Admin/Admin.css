@@ -1,0 +1,142 @@
+/* FilterComponent styles */
+.filter-component {
+  all: revert;
+}
+
+.adminPageCont {
+  display: flex;
+  flex-direction: row;
+}
+
+.adminPanel {
+  height: 556px;
+  width: 15%;
+  border-radius: 20px;
+  background-color: white;
+  box-shadow: 0px 5px 20px grey;
+  display: block;
+
+  margin-top: 25px;
+  padding: 1%;
+
+  display: flex;
+  flex-direction: column;
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.switchButton {
+  width: 10rem;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px;
+  border-style: solid;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.buttonSeparator {
+  width: 90%;
+  height: 3px;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  background-color: #e3e3e3;
+
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  border-radius: 1rem;
+}
+
+.databaseControl {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.databaseControl button {
+  width: 10rem;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px;
+  border-style: solid;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-bottom: 12px;
+}
+
+.databaseControl button:last-child {
+  margin-bottom: 0;
+}
+
+.logoutButton {
+  position: relative;
+  width: 10rem;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px;
+  border-style: solid;
+  margin-left: auto;
+  margin-right: auto;
+  top: 34%;
+}
+
+/* Container styles for the Admin component */
+.adminBody {
+  height: 100%;
+  width: 80%;
+  border-radius: 20px;
+  background-color: white;
+  box-shadow: 0px 5px 20px grey;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 25px;
+  padding: 2%;
+  padding-top: 0;
+}
+
+/* Admin header styling */
+.adminHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0px 10px 0px;
+  border: 1px;
+}
+
+/* Admin body styling */
+.adminTable {
+  border: 2px;
+  border-style: solid;
+  border-radius: 10px;
+  border-color: #e3e3e3;
+  overflow: hidden;
+}
+
+/* Modal data table styling */
+.ModalDataTable {
+  overflow: auto !important;
+  height: 60vh;
+}
+
+/* Action button container styling */
+.actionButtonCont {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Action button styling */
+.actionButtonCont button {
+  all: revert;
+  margin: 5px;
+  padding: 2%;
+  width: 75px;
+  border-radius: 8px;
+  border: 1px;
+  border-style: solid;
+}

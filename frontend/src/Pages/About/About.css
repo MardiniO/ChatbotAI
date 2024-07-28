@@ -1,3 +1,14 @@
+/* About CSS */
+
+.aboutHeader {
+  height: 15%;
+  padding: 2%;
+  margin-left: 15px;
+  transition: box-shadow 0.3s ease;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
 .aboutBody {
   margin: 10px;
   margin-left: 15px;

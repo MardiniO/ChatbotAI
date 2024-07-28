@@ -1,0 +1,37 @@
+/* FlashMessage CSS */
+
+.flashMessage {
+  /* Positioning of flash message to be half on Navbar half on page. */
+  /* It is also centered in the middle and placed on top of everything else. */
+  /* Display setting allow for text and onClose button to be separated. */
+  position: fixed;
+  top: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  /* Color and sizing of flash message */
+  background-color: #4caf50;
+  color: white;
+  padding: 15px;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+/* Different color if an error is detected. */
+.flashMessage.error {
+  background-color: #f44336;
+}
+
+/* For the onClose button. Simple styling. */
+.flashMessage button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}

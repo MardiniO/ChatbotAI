@@ -3,6 +3,11 @@ import chatLogo from "../../assets/chatbot.png";
 import { Nav, NavLink, NavMenu } from "./NavbarElements";
 import "./Navbar.css";
 
+// Navbar component, initialized in App.jsx to appear in every page.
+// Functionality of Navbar contained in Navbar Elements.
+// For extra information or documentation on this particular Navbar functionality,
+// https://www.geeksforgeeks.org/create-a-responsive-navbar-using-reactjs/
+
 const Navbar = () => {
   return (
     <>

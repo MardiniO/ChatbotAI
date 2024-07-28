@@ -1,5 +1,9 @@
-/* Modal.css */
-.modal {
+/* Modal CSS */
+
+/* Initial styling of modal. Display: none if modal hidden. */
+/* Modal takes up all the page. */
+/* Background-color used to darken rest of page when modal-content pops up. */
+.chatbotModal {
   display: none;
   position: fixed;
   z-index: 1;
@@ -11,11 +15,13 @@
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-.modal.show {
+.chatbotModal.show {
   display: block;
 }
 
-.modal-content {
+/* Modal content (what appears) is what is centered and operational. */
+/* Responsible of sizing and appearance of "modal". */
+.chatbotModal-content {
   background-color: #fefefe;
 
   padding: 20px;
@@ -32,7 +38,8 @@
   transform: translate(-50%, -50%);
 }
 
-.modalHeader {
+/* Container for onClose button and filterComponent. */
+.chatbotModal-header {
   height: 10%;
   position: relative;
   align-items: center;
@@ -63,6 +70,11 @@
   transform: translateY(-80%);
 }
 
+/*  */
+/* Modal Body */
+/*  */
+
+/* Data table styling, setting height and allowing scroll. */
 .ModalDataTable {
   overflow: auto !important;
   height: 60vh;

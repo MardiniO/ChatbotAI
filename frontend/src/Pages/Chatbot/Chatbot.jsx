@@ -8,7 +8,7 @@ import "./Chatbot.css";
 import chatbotLogo from "../../assets/chatbot.png";
 import userLogo from "../../assets/User-avatar.png";
 // Importing modal
-import Modal from "../../Components/Modal/Modal";
+import ChatbotModal from "../../Components/ChatbotModal/ChatbotModal";
 
 const Chatbot = () => {
   // Responsible for storing sent and received messages in a list.
@@ -161,6 +161,7 @@ const Chatbot = () => {
                 message.sender === "user" ? "sentMessage" : "receivedMessage"
               }
               dir={getDirection(message.text)}>
+              {/* {message.text === ""} */}
               <p>{message.text}</p>
               {message.options && message.options.modalButton && (
                 <button className="openModalButton" onClick={() => openModal()}>
@@ -193,7 +194,7 @@ const Chatbot = () => {
           </div>
         </form>
       </div>
-      {showModal && <Modal isOpen={showModal} onClose={closeModal}></Modal>}
+      {showModal && <ChatbotModal isOpen={showModal} onClose={closeModal} />}
     </>
   );
 };
