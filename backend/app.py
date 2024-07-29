@@ -15,7 +15,7 @@ from flask_jwt_extended import (
 )
 from datetime import timedelta
 
-from chatBot import chatBot
+# from chatBot import chatBot
 from crudOperations import (
     addData,
     readData,
@@ -23,6 +23,8 @@ from crudOperations import (
     deleteData,
     clearData,
 )
+import cohere
+from apiKey import apiKey
 
 # Password encryption
 from flask_bcrypt import bcrypt
@@ -32,6 +34,7 @@ app.config["JWT_SECRET_KEY"] = "your_jwt_secret_key"
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(
     minutes=30
 )  ## Sets expiry time for token, in this case 10 minutes.
+co = cohere.Client(apiKey)
 
 jwt = JWTManager(app)
 CORS(app)
@@ -49,8 +52,8 @@ def receive_data():
     try:
         data = request.json
         received_string = data.get("data")
-        response_message = chatBot(received_string)
-        return jsonify({"received": response_message})
+        response_message = co.chat(message=received_string)
+        return jsonify({"received": response_message.text})
     except Exception as e:
         return jsonify(error=str(e)), 500
 
