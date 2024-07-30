@@ -20,3 +20,5 @@ The NPM frontend libraries used in this project:
 - file-saver
 
 The mySQL database was hosted through XAMPP.
+
+Python v3.10 and NPM v20.16.0 are required.
