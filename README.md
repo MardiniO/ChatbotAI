@@ -22,3 +22,14 @@ The NPM frontend libraries used in this project:
 The mySQL database was hosted through XAMPP.
 
 Python v3.10 and NPM v20.16.0 are required.
+
+The Flask backend runs on port 5000, "localhost:5000"  
+The React frontend runs on port 5173, "localhost:5173"  
+mySQL is hosted on port 3306
+
+If replicating mySQL databases:
+
+- The question/answer database is named "QuesAns" with three columns "id", "question", and "answer".
+- The user/pass database is named "UserPass" with three columns "id", "username", and "password".
+
+The UI is preliminary and designed to best fit a 13" screen.
